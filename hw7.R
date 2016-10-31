@@ -368,7 +368,7 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   { #for loop through data and is factor and is logical function choose data
     if (plot_switch=="on" || plot_switch=="grid"){
       for ( t in 1:(ncol(da))){
-        if (length(unique(da[,t]))<=2 ){
+        if (length(unique(da[,t]))<=2 & is.factor(da[,t])){
           barplot(table(da[,t]),col='grey',main=paste(colnames(da)[t],"barplot",sep="-"))
         }
       }
