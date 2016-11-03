@@ -29,29 +29,7 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   
   
   
-  function7<-function(da,plot_switch,threshold,binvector )
-    #define a function7 that distinguishes if the dataframe, plot_switch,threhold,binvector are all correct
-    #if anything beyond the scope that we set, it stops the whole data exploration and tell you what happens wrongly
-    #parameter: data, plot_switch:turn on, off, or grid for plots, threshold:which set the boundary for data, binvector:set the bins size for plots
-  {data_check<-da
-  plot_switch_check<-plot_switch
-  threshold_check<-threshold
-  binvector_check<-binvector
-  if (!is.data.frame(data_check))
-  {print("it is not data frame")
-    stop(dataexpl)}#use stop function to stop the whole function of data exploration
-  if (plot_switch_check!="on" & plot_switch_check!="off" & plot_switch_check!="grid")
-  {print("plot_switch is wrong")
-    stop(dataexpl)}#use stop function to stop the whole function of data exploration
-  if (!is.vector(threshold_check)| threshold_check[1]>threshold_check[2]|threshold_check[1]<0|threshold_check[2]>1|threshold_check[1]<0 &threshold[2]>1)
-  {print("threshold is wrong")
-    stop(dataexpl)}#use stop function to stop the whole function of data exploration
-  if(! is.vector(binvector_check)|sort(binvector_check)[1]<=0)
-  {print("binvector is wrong")#use stop function to stop the whole function of data exploration
-    stop(dataexpl) }#use stop function to stop the whole function of data exploration
-  }
-  
-  function7(da,plot_switch,threshold,binvector)   
+   
   
   
   
