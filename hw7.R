@@ -1,7 +1,231 @@
 
-#for this assignment, I have some unfixed problems. So I used parts of my group member yichen zhang's code.
-#I wrote down my code at the very end. 
-equire(ggplot2)
+#below is what I did, which cannot be fixed when considering the max and min of data on the plots
+#I tried my best to fix it but I failed in some parts. it works but with a small error. 
+dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80)) 
+ {#define a data explore function that can loop thorugh all data, show hisstograms, density plots, and some 
+  #specied values such as rs-square values and pearson correlation coefficients 
+  #paratmeter:data,plot_switch that you can choose on, off, or grid 
+  #binvector that is for bins size 
+  #threshold for pearson correlation exceeds the range that you set
+  
+  #define a function6 that has to be here which if I put at the last, it won't work
+  #anything binary will show a barplot
+  #parameter data, plot_switch
+  function6<-function(da,plot_switch="off",newpage=F)
+  { #for loop through data and is factor and is logical function choose data
+    if (plot_switch=="on" || plot_switch=="grid"){
+      for ( t in 1:(ncol(da))){
+        if (length(unique(da[,t]))<=2 & is.factor(da[,t])){
+          barplot(table(da[,t]),col='grey',main=paste(colnames(da)[t],"barplot",sep="-"))
+        }
+      }
+    }
+  }
+  
+  #test
+  function6(da,plot_switch)   
+  
+  grid.newpage() 
+  
+  
+  
+  function7<-function(da,plot_switch,threshold,binvector )
+    #define a function7 that distinguishes if the dataframe, plot_switch,threhold,binvector are all correct
+    #if anything beyond the scope that we set, it stops the whole data exploration and tell you what happens wrongly
+    #parameter: data, plot_switch:turn on, off, or grid for plots, threshold:which set the boundary for data, binvector:set the bins size for plots
+  {data_check<-da
+  plot_switch_check<-plot_switch
+  threshold_check<-threshold
+  binvector_check<-binvector
+  if (!is.data.frame(data_check))
+  {print("it is not data frame")
+    stop(dataexpl)}#use stop function to stop the whole function of data exploration
+  if (plot_switch_check!="on" & plot_switch_check!="off" & plot_switch_check!="grid")
+  {print("plot_switch is wrong")
+    stop(dataexpl)}#use stop function to stop the whole function of data exploration
+  if (!is.vector(threshold_check)| threshold_check[1]>threshold_check[2]|threshold_check[1]<0|threshold_check[2]>1|threshold_check[1]<0 &threshold[2]>1)
+  {print("threshold is wrong")
+    stop(dataexpl)}#use stop function to stop the whole function of data exploration
+  if(! is.vector(binvector_check)|sort(binvector_check)[1]<=0)
+  {print("binvector is wrong")#use stop function to stop the whole function of data exploration
+    stop(dataexpl) }#use stop function to stop the whole function of data exploration
+  }
+  
+  function7(da,plot_switch,threshold,binvector)   
+  
+  
+  
+  #define a function1 that gives the table of factored, logical, numeric variables' table 
+  #including frequency or summary
+  #parameter is da that you enter
+  function1<-function(da)
+  {for (i in 1:ncol(da))
+  {if( is.factor(da[,i]))
+  {print(colnames(da)[i]) 
+    print(table(da[,i]))}
+    if(is.logical(da[,i]))
+    {print(colnames(da)[i]) 
+      print(table(da[,i]))}   
+    if (is.numeric(da[,i]))
+    {print(colnames(da)[i]) 
+      print(summary(da[,i]))}}
+  }
+  
+  #test 
+  function1(da)
+  
+  
+  #define a function2 that gives variable pairs in the first column and r-squre in the 
+  #second column
+  #parameter is data you enter
+  function2<-function(da)
+  {colvar<-c()
+  rsquare<-c()
+  pcor<-c()
+  w=1
+  #for loop through all data to determine whether they numeric or not 
+  #if yes calculate the corresponding r-squre values
+  for( j in 1:(ncol(da)-1))
+    for (k in (j+1):ncol(da))
+      if (is.numeric(da[,j] ) & is.numeric(da[,k]))
+      {colvar[w]<-paste(colnames(da)[j],colnames(da)[k],sep="-")#use paste function to paste
+      rsquare[w]<-summary(lm(da[,j]~da[,k]))$r.square#extract the r square value from summary
+      w=w+1}
+  newdata<-data.frame(colvar,rsquare)
+  
+  #rename the column names
+  names(newdata)[1]<-"Variable Pairs"
+  names(newdata)[2]<-"R-Square"
+  print(newdata)}
+  #test
+  function2(da)
+  
+  
+  #define a function3 that give the variables pairs in the first column and pearson correlation value
+  #which exceeds the threshold in the second column in a data frame format
+  #parameter is data you enter
+  function3<-function(da)
+  {w=1
+  colvar2<-c()
+  pcorex<-c()
+  #for loop through all data to find out the numeric class data 
+  for( j in 1:(ncol(da)-1))#for loop through data
+    for (k in (j+1):ncol(da))#for loop through data
+      if (is.numeric(da[,j] ) & is.numeric(da[,k]))#use is numeric function to determine 
+        if (abs(cor(da[,j],da[,k]))>threshold[2] || abs(cor(da[,j],da[,k]))<threshold[1])
+        {colvar2[w]<-paste(colnames(da)[j],colnames(da)[k],sep="-")#put all data which satisfied the requisites in cache
+        pcorex[w]<-cor(da[,j],da[,k])
+        w=w+1}
+  
+  newdata2<-data.frame(colvar2,pcorex)
+  #rename the columns names
+  names(newdata2)[1]<-"Variable Pairs"
+  names(newdata2)[2]<-"Pearson Exceeds	Threshold"
+  
+  print(newdata2)
+  }
+  
+  #test 
+  function3(da)
+  
+  
+  
+  
+  grid.newpage()
+  
+  #define a function4 that gives histograms and density histograms for each numerical variables
+  #with mean line on the graph 
+  #parameter is da, plot_switch
+  function4<-function(da,plot_switch) 
+  { binvector<-c(30,50)
+  #use ggplot2 draw graphs 
+  if(plot_switch=='on')
+    for( i in 1:ncol(da))#for loop through all data
+      if (is.numeric(da[,i] ) )
+        for(j in 1:length(binvector))##for loop through data
+        {print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(bins=binvector[j],colour="blue",stat="bin")+
+                 geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))#ggplot2 to show histogram
+          
+          
+          print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(aes(y=..density..),bins=binvector[j],colour="blue",stat="bin")+
+                  geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
+        }#ggplot2 to show histogram for density
+  if (plot_switch=='grid')
+    for( i in 1:ncol(da))#for loop through all data
+      if (is.numeric(da[,i] ) )
+        for(j in 1:length(binvector))##for loop through data
+        {print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(bins=binvector[j],colour="blue",stat="bin")+
+                 geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))#ggplot2 to show histogram
+          
+          
+          print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(aes(y=..density..),bins=binvector[j],colour="blue",stat="bin")+
+                  geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
+        }#ggplot2 to show histogram for density
+  }
+  
+  #test 
+  function4(da,plot_switch)
+  
+  
+  
+  #define a function that can give a grid plots contains all plots which have same bins size
+  #in one graph and you can turn it on,off,and grid
+  #parameter data, plot_switch
+  function5<-function(da,plot_switch)
+  {
+    histplot<-c()
+    densityplot<-c()
+    w=1
+    k=1
+    z=1
+    if(plot_switch=='grid')
+      for(j in 1:length(binvector)){#for llop through data columns
+        for( i in 1:ncol(da))
+        {if (is.numeric(da[,i]))#is numeric function to determine
+          
+        {
+          histplot[w]<-list(ggplot(da,aes_string(x=da[,i]))+geom_histogram(bins=binvector[j],colour="blue",stat="bin")+
+                              geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
+          #ggplot2 to show histogram
+          densityplot[w]<-list(ggplot(da,aes_string(x=da[,i]))+geom_histogram(aes(y=..density..),bins=binvector[j],colour="blue",stat="bin")+
+                                 geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
+          w=w+1}#ggplot2 to show histogram
+        }
+      }
+    for (k in seq( (w-1)/length(binvector),(w-1), by=(w-1)/length(binvector) ) )
+      #set an another for loop give all same attributed data based on bin size 
+    {do.call(grid.arrange, c(histplot[z:k], list(ncol=2)))#use grid arrange to put multiple plots on a graph
+      do.call(grid.arrange, c(densityplot[z:k], list(ncol=2)))
+      z=z+(w-1)/length(binvector) }
+   }
+   
+  #test 
+  function5(da,plot_switch)
+ 
+ }
+
+
+
+
+#test
+dataexpl(diamonds,binvector=-1)
+#test
+dataexpl(diamonds,threshold=c(-1,1))
+#test
+dataexpl(diamonds,plot_switch = "onoff")
+#test
+dataexpl(da="kk" )
+
+#test
+dataexpl(diamonds,"on")
+
+
+
+
+
+#This part is from yichen zhang becasue I found this is a little different from mine, which can work really nice
+##for this assignment, I have some unfixed problems. So I used parts of my group member yichen zhang's code.
+require(ggplot2)
 require(grid)
 
 #Q1
@@ -351,189 +575,6 @@ improve_explore <- function(dafra,switch = 'on', threshold = 0, vector = NULL){
 }
 improve_explore(diamonds,1,-1,10)#this is wrong input so you need to re-enter later
 #improve_explore(diamonds,1,2,c('s'))
-
-#below is what I did, which cannot be fixed when considering the max and min of data on the plots
-#I tried my best to fix it but I failed in some parts. it works but with a small error. 
-dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80)) 
-{#define a data explore function that can loop thorugh all data, show hisstograms, density plots, and some 
-  #specied values such as rs-square values and pearson correlation coefficients 
-  #paratmeter:data,plot_switch that you can choose on, off, or grid 
-  #binvector that is for bins size 
-  #threshold for pearson correlation exceeds the range that you set
-  
-  #define a function6 that has to be here which if I put at the last, it won't work
-  #anything binary will show a barplot
-  #parameter data, plot_switch
-  function6<-function(da,plot_switch="off",newpage=F)
-  { #for loop through data and is factor and is logical function choose data
-    if (plot_switch=="on" || plot_switch=="grid"){
-      for ( t in 1:(ncol(da))){
-        if (length(unique(da[,t]))<=2 & is.factor(da[,t])){
-          barplot(table(da[,t]),col='grey',main=paste(colnames(da)[t],"barplot",sep="-"))
-        }
-      }
-    }
-  }
-  
-  #test
-  function6(da,plot_switch)   
-  
-  grid.newpage() 
-  
-  
-  
-  
-  
-  #define a function1 that gives the table of factored, logical, numeric variables' table 
-  #including frequency or summary
-  #parameter is da that you enter
-  function1<-function(da)
-  {for (i in 1:ncol(da))
-  {if( is.factor(da[,i]))
-  {print(colnames(da)[i]) 
-    print(table(da[,i]))}
-    if(is.logical(da[,i]))
-    {print(colnames(da)[i]) 
-      print(table(da[,i]))}   
-    if (is.numeric(da[,i]))
-    {print(colnames(da)[i]) 
-      print(summary(da[,i]))}}
-  }
-  
-  #test 
-  function1(da)
-  
-  
-  #define a function2 that gives variable pairs in the first column and r-squre in the 
-  #second column
-  #parameter is data you enter
-  function2<-function(da)
-  {colvar<-c()
-  rsquare<-c()
-  pcor<-c()
-  w=1
-  #for loop through all data to determine whether they numeric or not 
-  #if yes calculate the corresponding r-squre values
-  for( j in 1:(ncol(da)-1))
-    for (k in (j+1):ncol(da))
-      if (is.numeric(da[,j] ) & is.numeric(da[,k]))
-      {colvar[w]<-paste(colnames(da)[j],colnames(da)[k],sep="-")#use paste function to paste
-      rsquare[w]<-summary(lm(da[,j]~da[,k]))$r.square#extract the r square value from summary
-      w=w+1}
-  newdata<-data.frame(colvar,rsquare)
-  
-  #rename the column names
-  names(newdata)[1]<-"Variable Pairs"
-  names(newdata)[2]<-"R-Square"
-  print(newdata)}
-  #test
-  function2(da)
-  
-  
-  #define a function3 that give the variables pairs in the first column and pearson correlation value
-  #which exceeds the threshold in the second column in a data frame format
-  #parameter is data you enter
-  function3<-function(da)
-  {w=1
-  colvar2<-c()
-  pcorex<-c()
-  #for loop through all data to find out the numeric class data 
-  for( j in 1:(ncol(da)-1))#for loop through data
-    for (k in (j+1):ncol(da))#for loop through data
-      if (is.numeric(da[,j] ) & is.numeric(da[,k]))#use is numeric function to determine 
-        if (abs(cor(da[,j],da[,k]))>threshold[2] || abs(cor(da[,j],da[,k]))<threshold[1])
-        {colvar2[w]<-paste(colnames(da)[j],colnames(da)[k],sep="-")#put all data which satisfied the requisites in cache
-        pcorex[w]<-cor(da[,j],da[,k])
-        w=w+1}
-  
-  newdata2<-data.frame(colvar2,pcorex)
-  #rename the columns names
-  names(newdata2)[1]<-"Variable Pairs"
-  names(newdata2)[2]<-"Pearson Exceeds	Threshold"
-  
-  print(newdata2)
-  }
-  
-  #test 
-  function3(da)
-  
-  
-  
-  
-  grid.newpage()
-  
-  #define a function4 that gives histograms and density histograms for each numerical variables
-  #with mean line on the graph 
-  #parameter is da, plot_switch
-  function4<-function(da,plot_switch) 
-  { binvector<-c(30,50)
-  #use ggplot2 draw graphs 
-  if(plot_switch=='on')
-    for( i in 1:ncol(da))#for loop through all data
-      if (is.numeric(da[,i] ) )
-        for(j in 1:length(binvector))##for loop through data
-        {print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(bins=binvector[j],colour="blue",stat="bin")+
-                 geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))#ggplot2 to show histogram
-          
-          
-          print(ggplot(da,aes_string(x=da[,i]))+geom_histogram(aes(y=..density..),bins=binvector[j],colour="blue",stat="bin")+
-                  geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
-        }#ggplot2 to show histogram for density
-  }
-  
-  #test 
-  function4(da,plot_switch)
-  
-  
-  
-  #define a function that can give a grid plots contains all plots which have same bins size
-  #in one graph and you can turn it on,off,and grid
-  #parameter data, plot_switch
-  function5<-function(da,plot_switch)
-  {
-    histplot<-c()
-    densityplot<-c()
-    w=1
-    k=1
-    z=1
-    if(plot_switch=='grid')
-      for(j in 1:length(binvector)){#for llop through data columns
-        for( i in 1:ncol(da))
-        {if (is.numeric(da[,i]))#is numeric function to determine
-          
-        {
-          histplot[w]<-list(ggplot(da,aes_string(x=da[,i]))+geom_histogram(bins=binvector[j],colour="blue",stat="bin")+
-                              geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
-          #ggplot2 to show histogram
-          densityplot[w]<-list(ggplot(da,aes_string(x=da[,i]))+geom_histogram(aes(y=..density..),bins=binvector[j],colour="blue",stat="bin")+
-                                 geom_vline(xintercept=mean(da[,i]),color="red")+xlab(colnames(da)[i]))
-          w=w+1}#ggplot2 to show histogram
-        }
-      }
-    for (k in seq( (w-1)/length(binvector),(w-1), by=(w-1)/length(binvector) ) )
-      #set an another for loop give all same attributed data based on bin size 
-    {do.call(grid.arrange, c(histplot[z:k], list(ncol=2)))#use grid arrange to put multiple plots on a graph
-      do.call(grid.arrange, c(densityplot[z:k], list(ncol=2)))
-      z=z+(w-1)/length(binvector) }
-  }
-  
-  #test 
-  function5(da,plot_switch)
-  
-  
-  
-  
-  
-  
-}
-
-
-
-
-dataexpl(diamonds,"grid")
-
-
-
 
 
 
