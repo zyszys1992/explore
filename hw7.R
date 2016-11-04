@@ -115,7 +115,7 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #with mean line on the graph 
   #parameter is da, plot_switch
   function4<-function(da,plot_switch) 
-  { binvector<-c(30,50)
+  {
   #use ggplot2 draw graphs 
   if(plot_switch=='on')
     for( i in 1:ncol(da))#for loop through all data
