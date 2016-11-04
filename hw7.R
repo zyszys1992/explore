@@ -1,7 +1,7 @@
 
 #below is what I did, which cannot be fixed when considering the max and min of data on the plots
 #I tried my best to fix it but I failed in some parts. it works but with a small error. 
-dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80)) 
+dataexpl<-function(da,plot_switch='off',threshold=c(0.1,0.5),binvector=c(30,80)) 
  {#define a data explore function that can loop thorugh all data, show hisstograms, density plots, and some 
   #specied values such as rs-square values and pearson correlation coefficients 
   #paratmeter:data,plot_switch that you can choose on, off, or grid 
@@ -13,9 +13,9 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #parameter data, plot_switch
   function6<-function(da,plot_switch="off",newpage=F)
   { #for loop through data and is factor and is logical function choose data
-    if (plot_switch=="on" || plot_switch=="grid"){
+    if (plot_switch=="on"|plot_switch=='grid' ){
       for ( t in 1:(ncol(da))){
-        if (length(unique(da[,t]))<=2 & is.factor(da[,t])){
+        if (length(unique(da[,t]))<=2 | is.factor(da[,t])){
           barplot(table(da[,t]),col='grey',main=paste(colnames(da)[t],"barplot",sep="-"))
         }
       }
@@ -25,7 +25,6 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #test
   function6(da,plot_switch)   
   
-  grid.newpage() 
   
   
   

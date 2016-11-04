@@ -49,9 +49,9 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #parameter data, plot_switch
   function6<-function(da,plot_switch="off",newpage=F)
   { #for loop through data and is factor and is logical function choose data
-    if (plot_switch=="on" || plot_switch=="grid"){
+    if (plot_switch=="on" | plot_switch=="grid"){
       for ( t in 1:(ncol(da))){
-        if (length(unique(da[,t]))<=2 & is.factor(da[,t])){
+        if (length(unique(da[,t]))<=2 | is.factor(da[,t])){
           barplot(table(da[,t]),col='grey',main=paste(colnames(da)[t],"barplot",sep="-"))
         }
       }
@@ -61,7 +61,7 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #test
   function6(da,plot_switch)   
   
-  grid.newpage() 
+  
   
   
   
@@ -151,7 +151,7 @@ dataexpl<-function(da,plot_switch='on',threshold=c(0.1,0.5),binvector=c(30,80))
   #with mean line on the graph 
   #parameter is da, plot_switch
   function4<-function(da,plot_switch) 
-  { binvector<-c(30,50)
+  { 
   #use ggplot2 draw graphs 
   if(plot_switch=='on')
     for( i in 1:ncol(da))#for loop through all data
