@@ -1,4 +1,6 @@
-
+library(grid)
+library(gridExtra)
+library(ggplot2)
 #below is what I did, which cannot be fixed when considering the max and min of data on the plots
 #I tried my best to fix it but I failed in some parts. it works but with a small error. 
 dataexpl<-function(da,plot_switch='off',threshold=c(0.1,0.5),binvector=c(30,80)) 
